@@ -1,0 +1,264 @@
+CREATE TABLE categories (
+  token VARCHAR(50),
+  id SERIAL PRIMARY KEY,
+  parent_id INT,
+  name VARCHAR(100),
+  description VARCHAR(255),
+  image VARCHAR(100),
+  template VARCHAR(255)
+);
+
+-- Создание таблицы "товар"
+CREATE TABLE products (
+  id SERIAL PRIMARY KEY,
+  id_category INT,
+  type VARCHAR(20),
+  name VARCHAR(100),
+  description VARCHAR(255),
+  amount INT,
+  price DECIMAL(10, 2),
+  currency VARCHAR(10),
+  image VARCHAR(100),
+  template VARCHAR(255),
+  isVisible BOOLEAN
+);
+
+id - уникальный идентификатор товара (автоинкрементируемый столбец)
+id_category - внешний ключ, связанный с категорией, к которой принадлежит товар
+type - тип товара, принимающий значения: uniqueP, nonuniqueP, uniqueF, nonuniqueF, API, service, gift
+name - название товара
+description - описание товара
+amount - количество товара
+price - цена товара (с десятичной точкой, с общим количеством цифр равным 10 и 2 цифрами после запятой)
+currency - валюта товара
+image - изображение товара
+template - шаблон для товара
+isVisible - параметр, указывающий, должен ли товар быть отображен (логическое значение)
+
+
+INSERT INTO categories (token, parent_id, name, description, image) VALUES
+('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', NULL, 'Category 1', '📃 Category: {CATEGORY_TITLE}\n📃 Description: {ATTRIBUTE-DESCRIPTION}', ''),
+('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', 1, 'Subcategory 1.1', '📃 Category: {CATEGORY_TITLE}\n📃 Description: {ATTRIBUTE-DESCRIPTION}', ''),
+('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', 1, 'Subcategory 1.2', '📃 Category: {CATEGORY_TITLE}\n📃 Description: {ATTRIBUTE-DESCRIPTION}', ''),
+('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', 2, 'Subcategory 1.1.1', '📃 Category: {CATEGORY_TITLE}\n📃 Description: {ATTRIBUTE-DESCRIPTION}', ''),
+('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', 2, 'Subcategory 1.1.2', '📃 Category: {CATEGORY_TITLE}\n📃 Description: {ATTRIBUTE-DESCRIPTION}', ''),
+('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', NULL, 'Category 2', '📃 Category: {CATEGORY_TITLE}\n📃 Description: {ATTRIBUTE-DESCRIPTION}', ''),
+('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', 6, 'Subcategory 2.1', '📃 Category: {CATEGORY_TITLE}\n📃 Description: {ATTRIBUTE-DESCRIPTION}', ''),
+('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', 6, 'Subcategory 2.2', '📃 Category: {CATEGORY_TITLE}\n📃 Description: {ATTRIBUTE-DESCRIPTION}', ''),
+('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', 7, 'Subcategory 2.1.1', '📃 Category: {CATEGORY_TITLE}\n📃 Description: {ATTRIBUTE-DESCRIPTION}', ''),
+('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', 7, 'Subcategory 2.1.2', '📃 Category: {CATEGORY_TITLE}\n📃 Description: {ATTRIBUTE-DESCRIPTION}', '');
+
+CREATE TABLE ProductsAvailabilityTemplate (
+  tg_token VARCHAR(50) PRIMARY KEY,
+  delimiter VARCHAR(10),
+  indent_count INT,
+  category_format VARCHAR(100),
+  subcategory_icon VARCHAR(50),
+  nonunique_product_text VARCHAR(255),
+  include_promotion_conditions BOOLEAN,
+  show_product_amount BOOLEAN
+);
+INSERT INTO ProductsAvailabilityTemplate (tg_token, delimiter, indent_count, category_format, nonunique_product_text, include_promotion_conditions, show_product_amount)
+VALUES ('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', '|', 1, '➖💎➖', 'в наличии', false, true);
+
+CREATE TABLE users (
+  token VARCHAR(50),
+  id INT PRIMARY KEY,
+  nickname VARCHAR(50),
+  first_name VARCHAR(50),
+  last_name VARCHAR(50),
+  user_id SERIAL INT,
+  balance DECIMAL(10, 2),
+  date_registration DATE,
+  ref_link VARCHAR(100)
+);
+
+CREATE TABLE pages (
+  token VARCHAR(50),
+  id SERIAL PRIMARY KEY,
+  parent_id INT,
+  type VARCHAR(50),
+  location VARCHAR(6)
+);
+
+CREATE TABLE profileTemplate (
+  token VARCHAR(50),
+  template TEXT,
+  video VARCHAR(100)
+);
+
+INSERT INTO profileTemplate (token, template, video)
+VALUES ('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', '
+ Имя: {FIRST_NAME}
+🔑 ID: {ID}
+💰 Ваш баланс: {BALANCE}', NULL);
+
+
+CREATE TABLE payments (
+  token VARCHAR(50),
+  id_payments SERIAL PRIMARY KEY,
+  id_user INT REFERENCES users(id),
+  amount DECIMAL(10, 2),
+  status VARCHAR(20),
+  comment VARCHAR(100),
+  date DATE
+);
+
+token
+id_payments. Самоинкрементируемый
+id_user. Вторичный ключ на таблицу users
+amount
+status. Принимает следующие значения: awaiting,  expired, completed
+comment
+date
+
+CREATE TABLE "Connected_payment_systems" (
+  "token" VARCHAR(50),
+  "name" VARCHAR(100),
+  "access_token" VARCHAR(100)
+);
+    INSERT INTO "Connected_payment_systems" ("bot_token", "name", "access_token")
+    VALUES ('6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0', 'Yoomoney', 'LOL');
+
+
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    token VARCHAR(50),
+    buyer VARCHAR(100),
+    time TIMESTAMP,
+    price DECIMAL(10, 2),
+    count INT,
+    status VARCHAR(50)
+);
+
+CREATE TABLE product_data (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_product INT,
+    data VARCHAR(255),
+    isUsed BOOLEAN,
+    FOREIGN KEY (id_product) REFERENCES product(id)
+);
+
+CREATE TABLE product_data (
+    id SERIAL PRIMARY KEY,
+    id_product INT,
+    data VARCHAR(255),
+    isUsed BOOLEAN,
+    FOREIGN KEY (id_product) REFERENCES product(id)
+);
+
+create table mailings(
+    bot_token varchar,
+    mailing_id serial primary key,
+    mailing_name varchar,
+    mailing_text text,
+    mailing_media_array varchar,
+    mailing_create_date varchar,
+    mailing_total_sent integer DEFAULT 0,
+    mailing_ok_sent integer DEFAULT 0,
+    mailing_error_sent integer DEFAULT 0,
+    mailing_complete integer DEFAULT 0,
+    mailing_status varchar
+)
+
+CREATE OR REPLACE FUNCTION calculate_amount(product_id integer) RETURNS integer AS $$
+BEGIN
+    RETURN (SELECT COUNT(*) FROM product_data WHERE id_product = product_id);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TABLE public.products (
+    id integer NOT NULL,
+    id_category integer,
+    type character varying(20),
+    name character varying(100),
+    description character varying(255),
+    amount integer GENERATED ALWAYS AS (
+    calculate_amount(id),
+    price numeric(10,2),
+    currency character varying(10),
+    image character varying(100),
+    template character varying(255),
+    isvisible boolean,
+    token character varying(50),
+    keyboard_operation_model character varying(50),
+    min_count integer,
+    max_count integer
+);
+
+CREATE OR REPLACE FUNCTION update_product_amount()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE products
+    SET amount = (
+        SELECT COUNT(*)
+
+
+FROM product_data pd
+        WHERE pd.id_product = NEW.id_product AND pd.is_used = FALSE
+    )
+    WHERE products.id = NEW.id_product;
+
+    RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql;
+CREATE TRIGGER product_data_trigger
+AFTER INSERT OR UPDATE OR DELETE ON product_data
+FOR EACH ROW
+EXECUTE FUNCTION update_product_amount();
+
+create table bot_subs(
+    bot_token varchar,
+    chat_link varchar,
+    chat_id varchar
+)
+
+insert into bot_subs(bot_token, chat_link, chat_id) values('5095191707:AAE2q_i71bUs0db6tkNMo0kXUQN45HZ9Vmg',
+                                                           'https://t.me/+1L5d7B5xwChhZmM6',
+                                                           '-1001830661452')
+insert into bot_subs(bot_token, chat_link, chat_id) values('5095191707:AAE2q_i71bUs0db6tkNMo0kXUQN45HZ9Vmg',
+                                                           'https://t.me/+0iE7UA1z3U41MGYy',
+                                                           '-1001563508443')
+
+CREATE TABLE bot_settings (
+    token VARCHAR(255) NOT NULL,
+    enabled BOOLEAN NOT NULL,
+    user_notification BOOLEAN NOT NULL,
+    order_notification BOOLEAN NOT NULL
+);
+
+create table agreements(
+    bot_token varchar,
+    agreement varchar
+)
+
+insert into agreements(bot_token, agreement) values('5095191707:AAE2q_i71bUs0db6tkNMo0kXUQN45HZ9Vmg',
+                                                    'Соглашение пользования ботом')
+
+
+CREATE TABLE bots(
+    id serial PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    status BOOLEAN NOT NULL,
+    money_plan VARCHAR ( 64 ) DEFAULT 'free',
+    type VARCHAR ( 32 ) DEFAULT 'virtual',
+    users_amount INTEGER NOT NULL DEFAULT 0,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    bot_name VARCHAR ( 64 ) ,
+    bot_username VARCHAR ( 64 ) NOT NULL,
+    lang_code VARCHAR ( 8 ) NOT NULL DEFAULT 'ru',
+    currency VARCHAR ( 8 ) NOT NULL DEFAULT 'ru',
+    balance NUMERIC(1000,900) NOT NULL DEFAULT 0.0,
+    avatar VARCHAR ( 128 )
+);
+
+ALTER TABLE bots ADD COLUMN token VARCHAR ( 64 ) NOT NULL DEFAULT '';
+ALTER TABLE bots ADD COLUMN notif_new_user BOOLEAN NOT NULL DEFAULT 'f';
+ALTER TABLE bots ADD COLUMN notif_new_order BOOLEAN NOT NULL DEFAULT 'f';
+ALTER TABLE bots ADD COLUMN  CHARACTER varying(99)[] NOT NULL DEFAULT '{}';
+
+insert into bots (user_id,status,money_plan,type,bot_name,bot_username) values (1,true,'free','physical','my_bot','@my_bot');
+insert into bots (user_id,status,money_plan,type,bot_name,bot_username) values (1,false,'basic','virtual','my_bot2','@my_bot2');
+insert into bots (user_id,status,money_plan,type,bot_name,bot_username) values (1,true,'full','access','my_bot3','@my_bot3');
+insert into bots (user_id,status,money_plan,type,bot_name,bot_username, token) values (1,true,'full','access','my_bot3','@my_bot3', '6371394959:AAEbtlh9WmFN8XR8nkxCCOYdjrl6Ivk64g0');
